@@ -14,18 +14,18 @@ export default defineConfig({
     host: true,
     port: 5174,
   },
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-          'vendor-framer': ['framer-motion'],
-          'vendor-recharts': ['recharts'],
-          'vendor-supabase': ['@supabase/supabase-js'],
-          'vendor-ocr': ['tesseract.js'],
-        }
+  outDir: 'build',
+  rollupOptions: {
+    output: {
+      manualChunks: {
+        'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+        'vendor-framer': ['framer-motion'],
+        'vendor-recharts': ['recharts'],
+        'vendor-supabase': ['@supabase/supabase-js'],
+        'vendor-ocr': ['tesseract.js'],
       }
-    },
-    chunkSizeWarningLimit: 1000,
-  }
+    }
+  },
+  chunkSizeWarningLimit: 1000,
+}
 })
