@@ -1,0 +1,26 @@
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
+import type { ProtectedRouteProps } from '@/types';
+
+/**
+ * High-order component for route protection.
+ * Redirects unauthenticated users to the login page while showing a loading state during auth checks.
+ */
+export function ProtectedRoute({ children }: ProtectedRouteProps) {
+    const { user, loading } = useAuth();
+
+    if (loading) {
+        return (
+            <div className="loading-container">
+                <div className="loading-spinner" />
+                <p>Loading...</p>
+            </div>
+        );
+    }
+
+    if (!user) {
+        return <Navigate to="/login" replace />;
+    }
+
+    return <>{children}</>;
+}

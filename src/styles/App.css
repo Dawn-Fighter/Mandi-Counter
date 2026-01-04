@@ -1,0 +1,71 @@
+/* ==========================================
+   Design System - Ambient Aurora Theme
+   ========================================== */
+:root {
+  /* Colors - Base */
+  --color-bg-deep: #050511;
+  --color-bg-surface: rgba(255, 255, 255, 0.03);
+  --color-bg-glass: rgba(20, 20, 35, 0.4);
+
+  /* Colors - Accents (Gradients) */
+  --color-accent-primary: #7000FF;
+  --color-accent-secondary: #00C2FF;
+  --color-accent-tertiary: #FF0080;
+
+  /* Colors - Text */
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: rgba(255, 255, 255, 0.65);
+  --color-text-muted: rgba(255, 255, 255, 0.4);
+
+  /* Glassmorphism */
+  --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  --glass-backdrop: blur(12px);
+
+  /* Spacing & Radius */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+
+  /* Transition */
+  --transition-smooth: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* ==========================================
+   Global Reset & Base Styles
+   ========================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--color-bg-deep);
+  color: var(--color-text-primary);
+  min-height: 100vh;
+  line-height: 1.5;
+  overflow-x: hidden;
+  /* Ambient Gradient Background */
+  background: radial-gradient(circle at 0% 0%, rgba(112, 0, 255, 0.15), transparent 40%),
+    radial-gradient(circle at 100% 0%, rgba(0, 194, 255, 0.15), transparent 40%),
+    radial-gradient(circle at 100% 100%, rgba(255, 0, 128, 0.15), transparent 40%),
+    radial-gradient(circle at 0% 100%, rgba(112, 0, 255, 0.1), transparent 40%);
+  background-attachment: fixed;
+}

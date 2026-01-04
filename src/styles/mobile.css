@@ -1,0 +1,259 @@
+/* ==========================================
+   Mobile-Specific Styles
+   ========================================== */
+
+/* Touch-friendly tap targets */
+@media (pointer: coarse) {
+
+    .btn,
+    .filter-chip,
+    .period-tab,
+    .nav-item,
+    input,
+    textarea {
+        min-height: 44px;
+    }
+
+    .action-btn {
+        min-width: 44px;
+    }
+}
+
+/* Small screens */
+@media (max-width: 480px) {
+    :root {
+        --font-size-2xl: 1.75rem;
+        --font-size-3xl: 2rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-sm);
+    }
+
+    .stat-card {
+        padding: var(--space-md);
+    }
+
+    .stat-value {
+        font-size: var(--font-size-lg);
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: var(--space-md);
+    }
+
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .user-info {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .entry-card-body {
+        flex-direction: column;
+        gap: var(--space-sm);
+    }
+
+    .main-stat-value {
+        font-size: var(--font-size-2xl);
+    }
+}
+
+/* Medium screens */
+@media (min-width: 481px) and (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Large screens */
+@media (min-width: 769px) {
+
+    .dashboard,
+    .history,
+    .stats-page,
+    .form-container {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .bottom-nav {
+        max-width: 600px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+}
+
+/* Safe area support for notched devices */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+    .bottom-nav {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .dashboard,
+    .history,
+    .stats-page,
+    .form-container {
+        padding-bottom: calc(80px + env(safe-area-inset-bottom));
+    }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    :root {
+        --color-bg-card: rgba(255, 255, 255, 0.1);
+    }
+
+    .stat-card,
+    .entry-card,
+    .auth-card {
+        border-width: 2px;
+    }
+}
+
+/* Dark mode specific (already default, but for completeness) */
+@media (prefers-color-scheme: dark) {
+    :root {
+        color-scheme: dark;
+    }
+}
+
+/* Landscape phone adjustments */
+@media (max-height: 500px) and (orientation: landscape) {
+    .auth-container {
+        padding: var(--space-sm);
+        align-items: flex-start;
+        overflow-y: auto;
+    }
+
+    .auth-card {
+        padding: var(--space-md);
+        margin: var(--space-md) 0;
+    }
+
+    .bottom-nav {
+        height: 60px;
+    }
+
+    .nav-label {
+        display: none;
+    }
+}
+
+/* Pull-to-refresh visual indicator */
+.pull-indicator {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--transition-fast);
+    z-index: var(--z-toast);
+}
+
+.pull-indicator.active {
+    transform: scaleX(1);
+}
+
+/* Touch swipe hints */
+.swipe-hint {
+    position: absolute;
+    right: var(--space-sm);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+}
+
+.entry-card-wrapper:first-child .swipe-hint {
+    animation: fadeInOut 3s ease-in-out 2s;
+}
+
+@keyframes fadeInOut {
+
+    0%,
+    100% {
+        opacity: 0;
+    }
+
+    20%,
+    80% {
+        opacity: 1;
+    }
+}
+
+/* Haptic feedback simulation (visual) */
+.haptic-tap {
+    animation: hapticPulse 0.1s ease-in-out;
+}
+
+@keyframes hapticPulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(0.98);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Skeleton loading states */
+.skeleton {
+    background: linear-gradient(90deg,
+            var(--color-bg-card) 0%,
+            var(--color-bg-tertiary) 50%,
+            var(--color-bg-card) 100%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s ease-in-out infinite;
+    border-radius: var(--radius-md);
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+.skeleton-stat {
+    height: 100px;
+}
+
+.skeleton-entry {
+    height: 120px;
+    margin-bottom: var(--space-md);
+}
