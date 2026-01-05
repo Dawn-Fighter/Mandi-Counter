@@ -13,7 +13,7 @@ export function calculatePeriodStats(entries: MandiEntry[]): PeriodStats {
         };
     }
 
-    const totalSpent = entries.reduce((sum, entry) => sum + entry.total_amount, 0);
+    const totalSpent = entries.reduce((sum, entry) => sum + entry.per_person_cost, 0);
     const averagePerMeal = totalSpent / entries.length;
     const totalPeople = entries.reduce((sum, entry) => sum + entry.number_of_people, 0);
     const averageGroupSize = totalPeople / entries.length;
@@ -39,11 +39,11 @@ export function calculateLocationStats(entries: MandiEntry[]): LocationStats[] {
         const existing = locationMap.get(entry.location) ?? { count: 0, total: 0 };
         locationMap.set(entry.location, {
             count: existing.count + 1,
-            total: existing.total + entry.total_amount,
+            total: existing.total + entry.per_person_cost,
         });
     }
 
-    const totalSpent = entries.reduce((sum, entry) => sum + entry.total_amount, 0);
+    const totalSpent = entries.reduce((sum, entry) => sum + entry.per_person_cost, 0);
 
     // Convert to array and calculate percentages
     const stats: LocationStats[] = Array.from(locationMap.entries())
