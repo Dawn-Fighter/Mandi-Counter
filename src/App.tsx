@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Login } from './components/Auth/Login';
 import { SignUp } from './components/Auth/SignUp';
@@ -35,45 +35,123 @@ function MainLayout() {
   );
 }
 
+const pageVariants = {
+  initial: (direction: number) => ({
+    x: direction > 0 ? '100%' : '-100%',
+    opacity: 0,
+    position: 'absolute' as const,
+  }),
+  animate: {
+    x: 0,
+    opacity: 1,
+    position: 'relative' as const,
+  },
+  exit: (direction: number) => ({
+    x: direction < 0 ? '100%' : '-100%',
+    opacity: 0,
+    position: 'absolute' as const,
+  })
+};
+
+
+
 function PageAnimateWrapper({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const navigate = useNavigate();
+  // We need to track the direction of navigation
+  // simple way: compare indices
+
+  // We need to store the previous index to determine direction
+  // However, in a functional component, we can't easily get "previous" render value for this purpose 
+  // without a ref or state that updates *after* render. 
+  // Actually, useLocation().key changes on every navigate. 
+
+  // Let's use a simpler approach: compare with a ref that holds the previous path
+  const prevPathRef = React.useRef(location.pathname);
+
+
+  // Update ref after determining direction (effectively for next render)
+  // But strictly, we want the direction for *this* transition. 
+  // If we update it in useEffect, it might be too late for the initial render of the new page?
+  // Actually, we can just use the previous value from the ref *before* updating it.
+
+  // Note: On mount, prevPathRef.current is initial path. 
+  // On update, distinct path.
+
+  // Better approach: State for direction might cause re-renders. 
+  // Let's rely on the fact effectively we just need to know if we are going "forward" or "backward" in the list.
+
+  const [directionState, setDirectionState] = React.useState(0);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    const prevIndex = pages.indexOf(prevPathRef.current);
+    const currIndex = pages.indexOf(location.pathname);
+    if (prevIndex !== -1 && currIndex !== -1 && prevIndex !== currIndex) {
+      setDirectionState(currIndex > prevIndex ? 1 : -1);
+    }
+    prevPathRef.current = location.pathname;
   }, [location.pathname]);
 
+
+  // Touch handling
+  const [touchStart, setTouchStart] = React.useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = React.useState<number | null>(null);
+
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    const currIndex = pages.indexOf(location.pathname);
+    if (currIndex === -1) return;
+
+    if (isLeftSwipe && currIndex < pages.length - 1) {
+      navigate(pages[currIndex + 1]);
+    }
+    if (isRightSwipe && currIndex > 0) {
+      navigate(pages[currIndex - 1]);
+    }
+  };
+
   return (
-    <AnimatePresence mode="popLayout" initial={false}>
-      <motion.div
-        key={location.pathname}
-        initial={{ opacity: 0, x: 20, scale: 0.98 }}
-        animate={{ opacity: 1, x: 0, scale: 1 }}
-        exit={{ opacity: 0, x: -20, scale: 0.98 }}
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="w-full flex-shrink-0"
-        drag="x"
-        dragDirectionLock
-        dragConstraints={{ left: 0, right: 0 }}
-        dragElastic={0.1}
-        onDragEnd={(_e, { offset }) => {
-          const swipeThreshold = 50;
-          const currentIndex = pages.indexOf(location.pathname);
-
-          if (currentIndex === -1) return;
-
-          if (offset.x > swipeThreshold && currentIndex > 0) {
-            // Swipe Right -> Go to previous page
-            navigate(pages[currentIndex - 1]);
-          } else if (offset.x < -swipeThreshold && currentIndex < pages.length - 1) {
-            // Swipe Left -> Go to next page
-            navigate(pages[currentIndex + 1]);
-          }
-        }}
-      >
-        {children}
-      </motion.div>
-    </AnimatePresence>
+    <div
+      className="w-full relative min-h-[80vh]" // Ensure touch area exists
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+    >
+      <AnimatePresence mode="popLayout" initial={false} custom={directionState}>
+        <motion.div
+          key={location.pathname}
+          custom={directionState}
+          variants={pageVariants}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          transition={{
+            x: { type: "tween", ease: [0.4, 0.0, 0.2, 1], duration: 0.3 }, // Standard material easing
+            opacity: { duration: 0.25 }
+          }}
+          style={{ willChange: "transform, opacity" }} // Hardware acceleration hint
+          className="w-full"
+        >
+          {children}
+        </motion.div>
+      </AnimatePresence>
+    </div>
   );
 }
 

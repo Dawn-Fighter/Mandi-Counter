@@ -1,20 +1,18 @@
 import { useState, useEffect, useMemo, type FormEvent, type ChangeEvent } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { BillScanner } from './BillScanner';
 import { useAuth } from '@/hooks/useAuth';
 import { useMandi } from '@/context/MandiContext';
 import { useHaptics } from '@/hooks/useHaptics';
 import { useSound } from '@/hooks/useSound';
 import { SuccessAnimation } from '@/components/UI/SuccessAnimation';
-import type { MandiFormData, ParsedBillData } from '@/types';
-import { getTodayISO, formatDateToISO } from '@/utils/dateHelpers';
+import type { MandiFormData } from '@/types';
+import { getTodayISO } from '@/utils/dateHelpers';
 import { calculatePerPersonCost, formatCurrency } from '@/utils/calculations';
 import { AnimatePresence, motion } from 'framer-motion';
 
 /**
  * Unified form for creating and editing Mandi meal entries.
- * Features an integrated Bill Scanner (OCR), manual entry fields,
- * and high-fidelity interaction feedback.
+ * Features manual entry fields and high-fidelity interaction feedback.
  */
 export function MandiEntryForm() {
     const { id } = useParams<{ id: string }>();
@@ -59,16 +57,7 @@ export function MandiEntryForm() {
         return calculatePerPersonCost(total, formData.numberOfPeople);
     }, [formData.totalAmount, formData.numberOfPeople]);
 
-    const handleBillScanData = (data: ParsedBillData) => {
-        vibrate('success');
-        setFormData((prev) => ({
-            ...prev,
-            location: data.location ?? prev.location,
-            totalAmount: data.totalAmount?.toString() ?? prev.totalAmount,
-            numberOfPeople: data.numberOfPeople,
-            date: formatDateToISO(data.date),
-        }));
-    };
+
 
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -172,11 +161,7 @@ export function MandiEntryForm() {
                     </h1>
                 </header>
 
-                {!isEditMode && (
-                    <div className="rounded-2xl border border-border/50 bg-card/50 backdrop-blur-xl p-4 shadow-sm">
-                        <BillScanner onDataExtracted={handleBillScanData} />
-                    </div>
-                )}
+
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-6">
                     {error && (

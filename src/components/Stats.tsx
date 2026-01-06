@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useStats } from '@/hooks/useStats';
 import type { TimePeriod } from '@/types';
@@ -18,6 +18,17 @@ export function Stats() {
     const [selectedPeriod, setSelectedPeriod] = useState<TimePeriod>('monthly');
     const { periodStats, locationStats, loading } = useStats(selectedPeriod);
 
+
+    const [isReady, setIsReady] = useState(!loading);
+
+    useEffect(() => {
+        if (!loading) {
+            setIsReady(true);
+            return;
+        }
+        const timer = setTimeout(() => setIsReady(true), 350);
+        return () => clearTimeout(timer);
+    }, [loading]);
 
     const periods: { key: TimePeriod; label: string }[] = [
         { key: 'weekly', label: 'Week' },
@@ -78,7 +89,15 @@ export function Stats() {
                 </div>
             </div>
 
-            {loading ? (
+            {!isReady ? (
+                <div className="px-6 pb-20 space-y-6 opacity-60 animate-pulse">
+                    <div className="h-[200px] bg-muted/20 rounded-[2rem]" />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div className="h-[160px] bg-muted/20 rounded-3xl" />
+                        <div className="h-[160px] bg-muted/20 rounded-3xl" />
+                    </div>
+                </div>
+            ) : loading ? (
                 <div className="flex justify-center p-20">
                     <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full" />
                 </div>

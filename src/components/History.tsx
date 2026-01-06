@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEntries } from '@/hooks/useEntries';
@@ -16,6 +16,17 @@ export function History() {
 
     const [searchTerm, setSearchTerm] = useState('');
     const [dateFilter, setDateFilter] = useState<'all' | 'week' | 'month' | 'year'>('all');
+
+    const [isReady, setIsReady] = useState(entries.length > 0);
+
+    useEffect(() => {
+        if (entries.length > 0) {
+            setIsReady(true);
+            return;
+        }
+        const timer = setTimeout(() => setIsReady(true), 350);
+        return () => clearTimeout(timer);
+    }, [entries.length]);
 
     const filteredEntries = useMemo(() => {
         let result = entries;
@@ -83,7 +94,13 @@ export function History() {
                     </div>
                 </div>
 
-                {loading ? (
+                {!isReady ? (
+                    <div className="space-y-3 opacity-60 animate-pulse">
+                        {[1, 2, 3].map(i => (
+                            <div key={i} className="h-24 bg-muted/20 rounded-2xl" />
+                        ))}
+                    </div>
+                ) : loading ? (
                     <div className="flex justify-center p-12">
                         <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full" />
                     </div>

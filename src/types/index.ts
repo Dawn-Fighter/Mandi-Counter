@@ -58,13 +58,6 @@ export interface MandiFormData {
     notes: string;
 }
 
-export interface ParsedBillData {
-    totalAmount: number | null;
-    location: string | null;
-    date: Date;
-    numberOfPeople: number;
-}
-
 // ==========================================
 // Analytics Types
 // ==========================================
@@ -97,10 +90,6 @@ export interface AuthUser {
 // ==========================================
 // Component Props Types
 // ==========================================
-
-export interface BillScannerProps {
-    onDataExtracted: (data: ParsedBillData) => void;
-}
 
 export interface EntryCardProps {
     entry: MandiEntry;

@@ -23,8 +23,8 @@ export function LocationDistribution({ data }: LocationDistributionProps) {
     }
 
     return (
-        <div className="h-full w-full">
-            <ResponsiveContainer width="100%" height="100%">
+        <div className="w-full">
+            <ResponsiveContainer width="100%" height={220}>
                 <PieChart>
                     <Pie
                         data={data}

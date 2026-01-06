@@ -47,10 +47,21 @@ export function MandiProvider({ children }: { children: React.ReactNode }) {
         }
     }, []);
 
-    // Initial Fetch & Realtime Subscription
+    // Initial Fetch, Auth Listener & Realtime Subscription
     useEffect(() => {
+        // Initial fetch
         fetchEntries();
 
+        // Listen for Auth changes (Login/Logout)
+        const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_IN') {
+                fetchEntries();
+            } else if (event === 'SIGNED_OUT') {
+                setEntries([]);
+            }
+        });
+
+        // Realtime subscription for data changes
         const channel = supabase
             .channel('mandi_entries_unified')
             .on(
@@ -76,6 +87,7 @@ export function MandiProvider({ children }: { children: React.ReactNode }) {
 
         return () => {
             supabase.removeChannel(channel);
+            authSubscription.unsubscribe();
         };
     }, [fetchEntries]);
 
