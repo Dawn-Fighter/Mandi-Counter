@@ -39,7 +39,6 @@ export function EntryCard({ entry, onEdit, onDelete }: EntryCardProps) {
 
     return (
         <motion.div
-            layout
             exit={{ opacity: 0, scale: 0.95 }}
             style={{ zIndex: isMenuOpen ? 50 : 0 }} // Fix for dropdown stacking context
             className={clsx(

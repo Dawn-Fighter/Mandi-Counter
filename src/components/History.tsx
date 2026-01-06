@@ -127,7 +127,6 @@ export function History() {
                                         visible: { opacity: 1, y: 0 }
                                     }}
                                     exit={{ opacity: 0, scale: 0.95 }}
-                                    layout
                                 >
                                     <EntryCard
                                         entry={entry}
