@@ -53,7 +53,7 @@ export function MandiProvider({ children }: { children: React.ReactNode }) {
         fetchEntries();
 
         // Listen for Auth changes (Login/Logout)
-        const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange((event, session) => {
+        const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange((event, _session) => {
             if (event === 'SIGNED_IN') {
                 fetchEntries();
             } else if (event === 'SIGNED_OUT') {

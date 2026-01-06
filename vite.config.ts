@@ -23,7 +23,6 @@ export default defineConfig({
           'vendor-framer': ['framer-motion'],
           'vendor-recharts': ['recharts'],
           'vendor-supabase': ['@supabase/supabase-js'],
-          'vendor-ocr': ['tesseract.js'],
         }
       }
     },
